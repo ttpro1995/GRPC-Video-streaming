@@ -6,8 +6,7 @@ import base64
 import numpy as np
 import imageTest_pb2
 import imageTest_pb2_grpc
-from main import *
-from people_counter import *
+
 
 _ONE_DAY_IN_SECONDS = 0
 
@@ -22,20 +21,21 @@ class Greeter(imageTest_pb2_grpc.ImageTestServicer):
     ttt=0
     flag = 1   #  -1 is skip. 1 is dont skip
     for req in request_iterator:
-            
-        print('time diff= '+str( time.clock() - ttt) )
-        ttt = time.clock()
+        time.process_time()
+        print('time diff= '+str( time.process_time() - ttt) )
+        ttt = time.process_time()
         
         frame = np.array(list(req.img))
-        frame = frame.reshape( (576,704) )
+        frame = frame.reshape( (1080,1920) )
         frame = np.array(frame, dtype = np.uint8 )
- 
-        if ppl_counter is None:
-            ppl_counter = PeopleCounter(frame.shape[:2], DIVIDER1)
+
+        meow = 5
+        # if ppl_counter is None:
+        #     ppl_counter = PeopleCounter(frame.shape[:2], DIVIDER1)
     
         #This line will currently not work as the people counting code is not there. Replace this line with whatever processing you want to do
         #do on the streamed video. 'processed' is the frame of the resulting video after processing.
-        processed, fg_mask = process_frame(frame, bg_subtractor,ppl_counter)
+        processed = frame
     
         #display processed video
         cv2.imshow('Processed Image', processed)
@@ -43,7 +43,7 @@ class Greeter(imageTest_pb2_grpc.ImageTestServicer):
         
         # ppl_counter.people_count1 is the current count of people. Replace it with whatever value you want to continuosly send back to the client
         #This line will send a value back to the client for each frame.
-        yield imageTest_pb2.MsgReply(reply = ppl_counter.people_count1 )
+        yield imageTest_pb2.MsgReply(reply=meow )
 
 
 

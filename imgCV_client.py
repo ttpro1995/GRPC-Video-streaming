@@ -20,17 +20,15 @@ def run():
 
 
 def generateRequests():
-    videogen = skvideo.io.vreader(URL)
-    i=0
-    cnt = 1
-    for frame in videogen:
-        
-        if(cnt == 5):
-            cnt = 1
-        else:
-            cnt+=1
-            continue
-        
+    import os
+    os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;0"
+
+    import cv2
+    # vcap = cv2.VideoCapture("rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov")
+    vcap = cv2.VideoCapture("rtsp://admin:Aa123456@192.168.1.3:554/onvif1")
+
+    while (1):
+        ret, frame = vcap.read()
         frame = cv2.cvtColor( frame, cv2.COLOR_RGB2GRAY )
         frame = bytes(frame)
         yield imageTest_pb2.MsgRequest(img= frame)
